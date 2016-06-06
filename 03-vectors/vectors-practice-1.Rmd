@@ -1,6 +1,6 @@
 ---
 title: "Vectors: practice I"
-author: "Jordan Menter"
+author: "Your name"
 output:
   html_document:
     css: ../workshop.css
