@@ -1,6 +1,6 @@
 ---
 title: "Vectors: practice I"
-author: "R Workshop"
+author: "Jordan Menter"
 output:
   html_document:
     css: ../workshop.css
@@ -23,6 +23,10 @@ opts_chunk$set(warning=FALSE,message=FALSE)
 \{-1, 0, 1, 2\} \\
 \{2, 1, 0, -1\}
 \]
+
+```{r exercise1}
+v1 <- -1:
+```
 
 1.   Build the following vectors using `seq()`.
 
