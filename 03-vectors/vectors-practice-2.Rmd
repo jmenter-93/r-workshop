@@ -33,6 +33,16 @@ that showcases which ones have the best `mpg`, then, the ones that have the
 highest `hp`.  Using `order()`, rearrange this data frame such that it's ordered
 first by `mpg` (low to high) and then by `hp` (high to low).
 
+```{r}
+attach(mtcars)
+# mpg - low to high
+newdata <- mtcars[order(mpg),]
+newdata
+# hp - high to low
+newdata2 <- mtcars[order(hp, decreasing = TRUE),]
+newdata2
+```
+
 * * *
 
 ## Changing Vector Elements
@@ -62,6 +72,16 @@ draw(p1x, p1y)
 
 you will see Calvin and his mirror reflection, except that there is a problem with the data: some garbage points are mixed in with the correct data, resulting in a lot of spikes that reach reach between 75 and 100 in the y direction. Please fix this problem, so that drawing `p1x` with `p1y` results in a clean rendering of Calvin and his reflection.
 
+```{r}
+new.p1x <- p1x
+new.p1y <- p1y
+# Subset to remove garbage points from data frame
+keep.y = new.p1y[new.p1y < 75]
+keep.x = new.p1x[new.p1y < 75]
+# Draw
+draw(keep.x, keep.y)
+```
+
 1.   
 
 Let's take a look at the second example:
@@ -72,6 +92,18 @@ draw(p2x, p2y)
 
 here, we almost have four duplicates of Hobbes in a square configuration, but the upper right drawing is missing. Please duplicate one of the drawings of Hobbes, and place it in the upper right corner (by modifying the `p2x` and `p2y` vectors, that is).
 
+```{r}
+new.p2x = p2x
+new.p2y = p2y
+# Select a subset of points that includes the upper-left Hobbes and move them to the upper-right
+copy.x = new.p2x[new.p2x < 50 & new.p2y > 50] + 50
+copy.y = new.p2y[new.p2x < 50 & new.p2y > 50]
+# Add the points to the vectors
+new.p2x = c(new.p2x, copy.x)
+new.p2y = c(new.p2y, copy.y)
+# Draw
+draw(new.p2x, new.p2y)
+```
 1.   
 
 Let's take a look at the third example:
@@ -81,6 +113,20 @@ draw(p3x, p3y)
 ```
 
 here, Calvin is running around a circle, but the drawing closest to the origin is backwards. In particular, the x and y coordinates need to be flipped to restore symmetry. As before, please fix this problem.
+
+```{r}
+# ***Unfinished***
+new.p3x = p3x
+new.p3y = p3y
+calvin.p3x = new.p3x[new.p3x < 45 & new.p3y < 45]
+calvin.p3y = new.p3y[new.p3x < 45 & new.p3y < 45]
+# Subset data to remove Calvin points
+otherdata.p3x = new.p3x[new.p3x >= 45]
+otherdata.p3y = new.p3y[new.p3y >= 45]
+# Combine x Calvin data with p3y, y Calvin data with p3x - the new x and y vectors have too few points
+otherdata.p3x = c(otherdata.p3x, calvin.p3y)
+otherdata.p3y = c(otherdata.p3y, calvin.p3x)
+```
 
 
 <div id="license">
