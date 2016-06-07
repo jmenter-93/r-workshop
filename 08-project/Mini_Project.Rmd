@@ -1,0 +1,134 @@
+---
+title: "Mini-Project"
+author: "Jordan Menter & Lizzie Kumar"
+date: "June 7, 2016"
+output: html_document
+---
+
+```{r temp_convert}
+# Load data
+load(url('http://www.stolaf.edu/people/olaf/cs125/project1.RData'))
+
+# Convert to absolute temperature in F
+# Add 14, then mult. by 1.8 then + 32
+faren_data <- (tData/100 + 14)*1.8 + 32
+
+```
+
+```{r global_temps}
+# Separate vectors for each month - function
+data_matrix <- matrix(data = faren_data, nrow = length(faren_data)/12, ncol = 12, byrow = TRUE)
+
+# Set column names
+colnames(data_matrix) <- c("January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December")
+
+# Mean global temperatures
+month_means <- colMeans(data_matrix)
+
+# Lowest and highest global mean temperatures for each month
+month_max <- apply(data_matrix, 2, max)
+month_min <- apply(data_matrix, 2, min)
+
+# When did these temperatures occur
+month_max_index <- apply(data_matrix, 2, which.max)
+month_min_index <- apply(data_matrix, 2, which.min)
+```
+
+```{r index_functions}
+# Get index for given month and year
+get_index <- function(month, year) {
+  return((year - 1881)*12 + month)
+}
+
+# Get month and year for given index
+get_dates <- function(index) {
+  month <- index %% 12
+  if (month == 0) month <- 12
+  year <- (index - month)/12 + 1881
+  return(c(month, year))
+}
+```
+
+``` {r month_plots}
+# set year vector
+all_years <- 1881:2012
+
+# set plotting grid
+par(mfrow=c(3,4))
+
+# plot each month
+for (i in 1:12) {
+  plot(all_years, data_matrix[,i], xlab = "Year", ylab = "Temperature",
+       main = colnames(data_matrix)[i], type = "l")
+}
+```
+
+```{r annual_plot}
+annual_temp <- rowMeans(data_matrix)
+plot(all_years, annual_temp, xlab = "Year", ylab = "Temperature",
+     main = "Average Annual Temperature", type = "l")
+```
+
+```{r 2000s_plot}
+# identify subset of original vector corresponding to 2000s
+jan2000 <- get_index(1, 2000)
+dec2012 <- get_index(12, 2012)
+
+plot(jan2000:dec2012, faren_data[jan2000:dec2012], type='l', xlab = "Months Since 1881", ylab = "Temperature", main = "2000s Average Monthly Temperature")
+```
+
+```{r 1990s_plot}
+# Identify subset of original vector corresponding to 1990s
+jan1990 <- get_index(1, 1990)
+dec1999 <- get_index(12, 1999)
+
+plot(jan1990:dec1999, faren_data[jan1990:dec1999], type='l', xlab = "Months Since 1881", ylab = "Temperature", main = "1990s Average Monthly Temperature")
+
+# Which months had the highest and lowest temperatures?
+nineties_subset <- faren_data[jan1990:dec1999]
+# Find maximum
+max_index <- which.max(nineties_subset) + jan1990 - 1
+max_dates <- get_dates(max_index)
+# Find minimum
+min_index <- which.min(nineties_subset) + jan1990 - 1
+min_dates <- get_dates(min_index)
+```
+
+```{r 1890s_plot}
+# Identify subset of original vector corresponding to 1890s
+jan1890 <- get_index(1, 1890)
+dec1899 <- get_index(12, 1899)
+
+plot(jan1890:dec1899, faren_data[jan1890:dec1899], type='l', xlab = "Months Since 1881", ylab = "Temperature", main = "1890s Average Monthly Temperature")
+
+# Mean temperature of this decade
+mean(faren_data[jan1890:dec1899])
+```
+
+```{r 44_years_plots}
+# First 44 years
+jan1881 <- get_index(1, 1881)
+dec1924 <- get_index(12, 1924)
+first_44 <- faren_data[jan1881:dec1924]
+plot(jan1881:dec1924, first_44, type = 'l', xlab = "Months Since 1881", ylab = "Temperature", main = "Monthly Avg. Temp. - First 44 Years")
+# Average Temperature
+mean(faren_data[jan1881:dec1924])
+
+# Second 44 years
+jan1925 <- get_index(1, 1925)
+dec1968 <- get_index(12, 1968)
+second_44 <- faren_data[jan1925:dec1968]
+plot(jan1925:dec1968, second_44, type = 'l', xlab = "Months Since 1881", ylab = "Temperature", main = "Monthly Avg. Temp. - Second 44 Years")
+# Average Temperature
+mean(faren_data[jan1925:dec1968])
+
+# last 44 years
+jan1969 <- get_index(1, 1969)
+dec2012 <- get_index(12, 2012)
+last_44 <- faren_data[jan1969:dec2012]
+plot(jan1969:dec2012, last_44, type = 'l', xlab = "Months Since 1881", ylab = "Temperature", main = "Monthly Avg. Temp. - Last 44 Years")
+# Average Temperature
+mean(faren_data[jan1969:dec2012])
+
+```
+
