@@ -1,11 +1,15 @@
 ---
-title: "Mini-Project"
+title: "Mini-Project - Global Temperatures"
 author: "Jordan Menter & Lizzie Kumar"
 date: "June 7, 2016"
 output: html_document
 ---
 
-```{r temp_convert}
+### Introduction
+
+In this report, we analyze trends in average monthly global temperature from 1881 to 2012. Our [data](http://data.giss.nasa.gov/gistemp/tabledata_v3/GLB.Ts+dSST.txt) comes from the NASA Goddard Institute for Space Studies. Note that this data is measured in 0.01 degrees Celsius - for our analyses, we convert it to absolute temperature in Fahrenheit. 
+
+```{r temp_convert, echo = FALSE}
 # Load data
 load(url('http://www.stolaf.edu/people/olaf/cs125/project1.RData'))
 
@@ -15,7 +19,9 @@ faren_data <- (tData/100 + 14)*1.8 + 32
 
 ```
 
-```{r global_temps}
+### Monthly Mean Global Temperatures
+
+```{r global_temps, echo = FALSE}
 # Separate vectors for each month - function
 data_matrix <- matrix(data = faren_data, nrow = length(faren_data)/12, ncol = 12, byrow = TRUE)
 
@@ -32,9 +38,26 @@ month_min <- apply(data_matrix, 2, min)
 # When did these temperatures occur
 month_max_index <- apply(data_matrix, 2, which.max)
 month_min_index <- apply(data_matrix, 2, which.min)
+
+# Get dates
+# month_max_dates <- apply(month_max_index, 2, get_dates[2])
 ```
 
-```{r index_functions}
+We begin by finding the mean global temperature for each month. This data is displayed in the following table:
+
+`r month_means`
+
+We also find in which year the highest average global temperature occurs for each month, displayed in the following table. Note that the values are the months since January 1881.
+
+`r month_max_index`
+
+We complete the same analysis for the lowest average global temperature of each month, shown below.
+
+`r month_min_index`
+
+Notice that the dates at which the highest average global temperatures occur are consistently more recent than those at which the lowest average global temperatures occur. 
+
+```{r index_functions, echo = FALSE}
 # Get index for given month and year
 get_index <- function(month, year) {
   return((year - 1881)*12 + month)
@@ -49,7 +72,9 @@ get_dates <- function(index) {
 }
 ```
 
-``` {r month_plots}
+### Visualizing Monthly Average Global Temperatures
+
+``` {r month_plots, echo = FALSE}
 # set year vector
 all_years <- 1881:2012
 
@@ -63,13 +88,21 @@ for (i in 1:12) {
 }
 ```
 
-```{r annual_plot}
+We see that each month has a consistent warming trend over the course of the years under consideration. 
+
+### Visualizing Average Annual Temperatures, 1881 - 2012
+
+```{r annual_plot, echo = FALSE}
 annual_temp <- rowMeans(data_matrix)
 plot(all_years, annual_temp, xlab = "Year", ylab = "Temperature",
      main = "Average Annual Temperature", type = "l")
 ```
 
-```{r 2000s_plot}
+As in the previous plots, we also see a consistent warming trend in the average annual temperatures over all years. The lowest average temperature occured in `r which.min(annual_temp) + 1880`, and the highest average temperature occured in `r which.max(annual_temp) + 1880`.
+
+### Monthly Average Temperatures in the 2000s
+
+```{r 2000s_plot, echo = FALSE}
 # identify subset of original vector corresponding to 2000s
 jan2000 <- get_index(1, 2000)
 dec2012 <- get_index(12, 2012)
@@ -77,7 +110,11 @@ dec2012 <- get_index(12, 2012)
 plot(jan2000:dec2012, faren_data[jan2000:dec2012], type='l', xlab = "Months Since 1881", ylab = "Temperature", main = "2000s Average Monthly Temperature")
 ```
 
-```{r 1990s_plot}
+When considering only the years from 2000 to 2012, it is difficult to discern a consistent warming or cooling trend. The data appears rather noisy.
+
+### Monthly Average Temperatures in the 1990s
+
+```{r 1990s_plot, echo = FALSE}
 # Identify subset of original vector corresponding to 1990s
 jan1990 <- get_index(1, 1990)
 dec1999 <- get_index(12, 1999)
@@ -94,7 +131,9 @@ min_index <- which.min(nineties_subset) + jan1990 - 1
 min_dates <- get_dates(min_index)
 ```
 
-```{r 1890s_plot}
+### Monthly Average Temperatures in the 1890s
+
+```{r 1890s_plot, echo = FALSE}
 # Identify subset of original vector corresponding to 1890s
 jan1890 <- get_index(1, 1890)
 dec1899 <- get_index(12, 1899)
@@ -102,17 +141,21 @@ dec1899 <- get_index(12, 1899)
 plot(jan1890:dec1899, faren_data[jan1890:dec1899], type='l', xlab = "Months Since 1881", ylab = "Temperature", main = "1890s Average Monthly Temperature")
 
 # Mean temperature of this decade
-mean(faren_data[jan1890:dec1899])
+# mean(faren_data[jan1890:dec1899])
 ```
 
-```{r 44_years_plots}
+The mean temperature of this decade is `r mean(faren_data[jan1890:dec1899])`.
+
+### Observing Warming Trends
+
+```{r 44_years_plots, echo = FALSE}
 # First 44 years
 jan1881 <- get_index(1, 1881)
 dec1924 <- get_index(12, 1924)
 first_44 <- faren_data[jan1881:dec1924]
 plot(jan1881:dec1924, first_44, type = 'l', xlab = "Months Since 1881", ylab = "Temperature", main = "Monthly Avg. Temp. - First 44 Years")
 # Average Temperature
-mean(faren_data[jan1881:dec1924])
+# mean(faren_data[jan1881:dec1924])
 
 # Second 44 years
 jan1925 <- get_index(1, 1925)
@@ -120,7 +163,7 @@ dec1968 <- get_index(12, 1968)
 second_44 <- faren_data[jan1925:dec1968]
 plot(jan1925:dec1968, second_44, type = 'l', xlab = "Months Since 1881", ylab = "Temperature", main = "Monthly Avg. Temp. - Second 44 Years")
 # Average Temperature
-mean(faren_data[jan1925:dec1968])
+# mean(faren_data[jan1925:dec1968])
 
 # last 44 years
 jan1969 <- get_index(1, 1969)
@@ -128,7 +171,9 @@ dec2012 <- get_index(12, 2012)
 last_44 <- faren_data[jan1969:dec2012]
 plot(jan1969:dec2012, last_44, type = 'l', xlab = "Months Since 1881", ylab = "Temperature", main = "Monthly Avg. Temp. - Last 44 Years")
 # Average Temperature
-mean(faren_data[jan1969:dec2012])
+# mean(faren_data[jan1969:dec2012])
 
 ```
 
+The mean temperature of the first 44 years is `r mean(faren_data[jan1881:dec1924])`. 
+Of the three periods considered here, it is easiest to observe a consistent warming trend in the last 44 years.
